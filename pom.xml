@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.isoft</groupId>
-    <artifactId>common</artifactId>
+    <artifactId>phone</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>common</name>
-    <description>a common project</description>
+    <name>phone</name>
+    <description>a phone project</description>
 
     <properties>
         <java.version>1.8</java.version>
