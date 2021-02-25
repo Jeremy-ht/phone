@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.isoft.dao.PhonesMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.isoft.pojo.entity.Phones">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="image" property="image" />
+        <result column="kucun" property="kucun" />
+        <result column="price" property="price" />
+        <result column="weight" property="weight" />
+        <result column="content" property="content" />
+        <result column="categoryid" property="categoryid" />
+        <result column="color" property="color" />
+        <result column="version" property="version" />
+        <result column="title" property="title" />
+        <result column="year" property="year" />
+        <result column="wuxian" property="wuxian" />
+        <result column="chicun" property="chicun" />
+        <result column="nfc" property="nfc" />
+        <result column="typec" property="typec" />
+        <result column="pool" property="pool" />
+        <result column="icon" property="icon" />
+        <result column="state" property="state" />
+        <result column="creatime" property="creatime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, image, kucun, price, weight, content, categoryid, color, version, title, year, wuxian, chicun, nfc, typec, pool, icon, state, creatime
+    </sql>
+
+</mapper>
