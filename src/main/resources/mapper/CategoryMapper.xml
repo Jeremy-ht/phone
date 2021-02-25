@@ -18,16 +18,14 @@
 
 
     <select id="selCateList" resultType="com.isoft.pojo.vo.CategoryVo">
-    SELECT
-        c.*,
-        a.username
-    FROM
-        category c
-        LEFT JOIN admin a ON a.id = c.creator
-    WHERE
-        c.state = 1
-    GROUP BY
-        creatime DESC
+        SELECT
+            c.*
+        FROM
+            category c
+        WHERE
+            c.state = 1
+        ORDER BY
+            creatime DESC
     </select>
 
 </mapper>
