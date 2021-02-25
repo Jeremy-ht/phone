@@ -72,4 +72,23 @@
         WHERE f.state = 1 and f.id = #{id}
     </select>
 
+
+	<select id="getSearchList" resultType="com.isoft.pojo.vo.PhonesVo">
+		SELECT
+			f.*,
+			c.categoryname
+		FROM
+			phones f
+		LEFT JOIN category c ON f.categoryid = c.id
+		WHERE f.state = 1
+			and (
+			c.categoryname like concat('%',#{searchText},'%') ||
+			f.name like concat('%',#{searchText},'%') ||
+			f.color like concat('%',#{searchText},'%') ||
+			f.version like concat('%',#{searchText},'%') ||
+			f.content like concat('%',#{searchText},'%')
+			)
+		ORDER BY
+			f.creatime DESC
+	</select>
 </mapper>

@@ -12,23 +12,25 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author ${author}
-
  */
 public interface PhonesMapper extends BaseMapper<Phones> {
 
-	@Update("update Phones set state = #{state} where id = #{id}")
-	int pullScenery(@Param("id") Integer id, @Param("state") Integer state);
+    @Update("update Phones set state = #{state} where id = #{id}")
+    int pullScenery(@Param("id") Integer id, @Param("state") Integer state);
 
-	Page<PhonesVo> getSceneryList(Page<PhonesVo> page, Integer categoryId);
+    Page<PhonesVo> getSceneryList(Page<PhonesVo> page, Integer categoryId);
 
-	List<PhonesVo> getFourIcon();
+    List<PhonesVo> getFourIcon();
 
-	PhonesVo getSceneryInfo(Integer id);
+    PhonesVo getSceneryInfo(Integer id);
 
-	@Select("SELECT categoryname FROM category where id = #{id}")
-	String getSceneryListByCate(Integer id);
+    @Select("SELECT categoryname FROM category where id = #{id}")
+    String getSceneryListByCate(Integer id);
+
+    Page<PhonesVo> getSearchList(@Param("page") Page<PhonesVo> page,
+                                 @Param("searchText") String searchText);
 }

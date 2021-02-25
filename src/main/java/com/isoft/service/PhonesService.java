@@ -19,4 +19,6 @@ public interface PhonesService extends IService<Phones> {
 	Page<PhonesVo> getSceneryList(long pagenum, long pagesize, Integer categoryId);
 
 	ResponseData getSceneryInfo(Integer id);
+
+    Page<PhonesVo> getSearchList(long pagenum, long pagesize, String searchText);
 }

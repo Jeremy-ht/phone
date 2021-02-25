@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.isoft.enums.ResultCodeEnum;
 import com.isoft.pojo.entity.Admin;
 import com.isoft.pojo.entity.User;
+import com.isoft.pojo.vo.AdminVo;
 import com.isoft.pojo.vo.LoginUserPwdVo;
 import com.isoft.pojo.vo.LoginlogVo;
+import com.isoft.pojo.vo.PhonesVo;
+import com.isoft.service.PhonesService;
 import com.isoft.service.UserService;
 import com.isoft.utils.CommonUtil;
 import com.isoft.utils.MD5Code;
@@ -27,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PhonesService phonesService;
 
     /**
      * 注册（用户名密码）
@@ -172,6 +178,22 @@ public class UserController {
         return ResponseData.error().message("获取用户列表失败！");
     }
 
+    /**
+     * 搜索
+     */
+    @GetMapping("/getSearchList")
+    public ResponseData getSearchList(@RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
+                                      @RequestParam(name = "pagesize", defaultValue = "10", required = false) long pagesize,
+                                      @RequestParam(name = "searchText", required = false) String searchText) {
+        Page<PhonesVo> page = phonesService.getSearchList(pagenum, pagesize, searchText);
+        if (page != null) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("total", page.getTotal());
+            map.put("data", page.getRecords());
+            return ResponseData.success().message("获取搜索列表成功！").data(map);
+        }
+        return ResponseData.error().message("获取搜索列表失败！");
+    }
 
 
 }

@@ -47,4 +47,17 @@ public class PhonesServiceImpl extends ServiceImpl<PhonesMapper, Phones> impleme
 		}
 		return ResponseData.success().message("获取详情成功！").data("data", d);
 	}
+
+	@Override
+	public Page<PhonesVo> getSearchList(long pagenum, long pagesize, String searchText) {
+		Page<PhonesVo> page = new Page<>(pagenum, pagesize);
+		try {
+			Page<PhonesVo> p = phonesMapper.getSearchList(page, searchText);
+			return p;
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("getSearchList：错误" + e);
+			return null;
+		}
+	}
 }
