@@ -29,7 +29,7 @@ public class CommonAutoGenerator {
         DataSourceConfig dsConfig = new DataSourceConfig();
         dsConfig.setDbType(DbType.MYSQL)
                 .setDriverName("com.mysql.cj.jdbc.Driver")
-                .setUrl("jdbc:mysql://localhost:3306/flower?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai")
+                .setUrl("jdbc:mysql://cn1.utools.club:35557/phone?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai")
                 .setUsername("root")
                 .setPassword("root");
 
@@ -37,7 +37,7 @@ public class CommonAutoGenerator {
         StrategyConfig stConfig = new StrategyConfig();
         stConfig.setCapitalMode(true)//全局大写命名
                 .setNaming(NamingStrategy.underline_to_camel)   //数据库表映射到实体的命名策略
-                .setInclude("ordercent")  //====需要生成的表====
+                .setInclude("phones")  //====需要生成的表====
 //                .setTablePrefix("")  //表前缀
                 .setEntityLombokModel(true);  //lombok
 

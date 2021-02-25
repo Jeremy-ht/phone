@@ -85,9 +85,9 @@ public class Phones implements Serializable {
     private Integer nfc;
 
     /**
-     * 充电接口类型
+     * 首页  1
      */
-    private Integer typec;
+    private Integer isShow;
 
     /**
      * 电池容量 5000mAh
