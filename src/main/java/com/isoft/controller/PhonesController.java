@@ -79,6 +79,10 @@ public class PhonesController {
 	public ResponseData getSceneryList(@RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
 									   @RequestParam(name = "pagesize", defaultValue = "10", required = false) long pagesize,
 									   @PathVariable("categoryId") Integer categoryId) {
+		if (categoryId == 777){
+			Category c = categoryMapper.selectOne1();
+			categoryId= c.getId();
+		}
 
 		Page<PhonesVo> page = phonesService.getSceneryList(pagenum, pagesize, categoryId);
 		if (page != null) {

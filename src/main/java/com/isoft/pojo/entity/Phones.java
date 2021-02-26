@@ -1,12 +1,15 @@
 package com.isoft.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -87,7 +90,7 @@ public class Phones implements Serializable {
     /**
      * 首页  1
      */
-    private Integer isShow;
+    private Integer isshow;
 
     /**
      * 电池容量 5000mAh
@@ -99,8 +102,13 @@ public class Phones implements Serializable {
      */
     private String icon;
 
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer state;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime creatime;
 
 
