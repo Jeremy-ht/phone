@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,7 +33,7 @@ import java.util.Map;
  *
  * @author ${author}
  */
-@Controller
+@RestController
 @RequestMapping("/phones")
 public class PhonesController {
 
@@ -50,7 +52,7 @@ public class PhonesController {
 	 * 添加
 	 */
 	@PostMapping("/addScenery")
-	public ResponseData addScenery(@RequestBody Phones phones ) {
+	public ResponseData addScenery(@RequestBody Phones phones) {
 		return phonesService.save(phones) ? ResponseData.success().message("添加成功！")
 				: ResponseData.error().message("添加失败!");
 	}
@@ -79,9 +81,9 @@ public class PhonesController {
 	public ResponseData getSceneryList(@RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
 									   @RequestParam(name = "pagesize", defaultValue = "10", required = false) long pagesize,
 									   @PathVariable("categoryId") Integer categoryId) {
-		if (categoryId == 777){
+		if (categoryId == 777) {
 			Category c = categoryMapper.selectOne1();
-			categoryId= c.getId();
+			categoryId = c.getId();
 		}
 
 		Page<PhonesVo> page = phonesService.getSceneryList(pagenum, pagesize, categoryId);
@@ -124,7 +126,6 @@ public class PhonesController {
 
 			map.put(category.getCategoryname(), l);
 		}
-
 		return ResponseData.success().message("获取数据成功！").data("data", map);
 	}
 
@@ -145,6 +146,91 @@ public class PhonesController {
 	public ResponseData getSceneryListByCate(@PathVariable("id") Integer id) {
 		String name = phonesMapper.getSceneryListByCate(id);
 		return ResponseData.success().message("获取数据成功！").data("data", name);
+	}
+
+
+	/**
+	 * 添加到首页显示
+	 */
+	@GetMapping("/addIndexShow/{id}/{image}")
+	public ResponseData addIndexShow(@PathVariable("id") Integer id, @PathVariable("image") String image) {
+		List<Phones> list = phonesService.list(new QueryWrapper<Phones>()
+				.eq("state", 1)
+				.isNotNull("isshow")
+				.orderByAsc("isshow"));
+		if (list.isEmpty()) {
+			int ii = phonesMapper.updIsshowById2(id, image);
+			return ResponseData.success().message("成功！");
+
+		} else if (list.size() == 4) {
+			List<Phones> collect = list.stream().limit(1).collect(Collectors.toList());
+			Phones phones = collect.get(0);
+			int i = phonesMapper.updIsshowById(phones.getId());
+
+			List<Phones> list2 = phonesService.list(new QueryWrapper<Phones>()
+					.eq("state", 1)
+					.isNotNull("isshow")
+					.orderByDesc("isshow")).stream().limit(1).collect(Collectors.toList());
+			Integer isshow = list2.get(0).getIsshow();
+			int iii = phonesMapper.updIsshowById3(id, isshow + 1, image);
+			return ResponseData.success().message("成功！");
+
+
+		} else if (list.size() < 4) {
+			List<Phones> list2 = phonesService.list(new QueryWrapper<Phones>()
+					.eq("state", 1)
+					.isNotNull("isshow")
+					.orderByDesc("isshow")).stream().limit(1).collect(Collectors.toList());
+			Integer isshow = list2.get(0).getIsshow();
+			int iii = phonesMapper.updIsshowById3(id, isshow + 1, image);
+			return ResponseData.success().message("成功！");
+
+		}
+
+		return ResponseData.error().message("失败！");
+
+	}
+
+
+	/**
+	 * 排行榜
+	 */
+	@GetMapping("/getInfoList6/{id}")
+	public ResponseData getInfoList6(@PathVariable("id") Integer id) {
+		Phones phones = phonesService.getById(id);
+		Integer categoryid = phones.getCategoryid();
+
+		List<Phones> list = phonesMapper.getInfoList6(categoryid);
+
+		if (list.size() == 6) {
+			return ResponseData.success().message("获取数据成功！").data("data", list);
+		}
+
+		List<Integer> strList = new ArrayList<>();
+		List<Phones> list1 = null;
+		if (list.size() == 0) {
+			list1 = phonesService.list(new QueryWrapper<Phones>().
+					eq("state", 1)
+					.eq("categoryid", categoryid))
+					.stream().limit(6)
+					.collect(Collectors.toList());
+		} else {
+			for (Phones phonesVo : list) {
+				strList.add(phonesVo.getId());
+			}
+
+			list1 = phonesService.list(new QueryWrapper<Phones>().
+					eq("state", 1)
+					.eq("categoryid", categoryid)
+					.notIn("id", strList))
+					.stream().limit(6 - list.size())
+					.collect(Collectors.toList());
+		}
+
+
+		list.addAll(list1);
+
+		return ResponseData.success().message("获取数据成功！").data("data", list);
 	}
 
 

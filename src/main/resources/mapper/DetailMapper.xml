@@ -75,8 +75,8 @@
             t.n name,
             count( d.id ) value
         FROM
-            ( SELECT DISTINCT categoryid c, categoryname n FROM category ) t
-            LEFT JOIN detail d ON t.c = d.categoryid
+            ( SELECT DISTINCT id c, categoryname n FROM category ) t
+            LEFT JOIN phones d ON t.c = d.categoryid
         GROUP BY
             t.n
     </select>

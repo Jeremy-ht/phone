@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.isoft.enums.ResultCodeEnum;
 import com.isoft.pojo.entity.Admin;
 import com.isoft.pojo.entity.User;
-import com.isoft.pojo.vo.AdminVo;
-import com.isoft.pojo.vo.LoginUserPwdVo;
-import com.isoft.pojo.vo.LoginlogVo;
-import com.isoft.pojo.vo.PhonesVo;
+import com.isoft.pojo.vo.*;
 import com.isoft.service.PhonesService;
 import com.isoft.service.UserService;
 import com.isoft.utils.CommonUtil;
@@ -28,172 +25,170 @@ import java.util.Map;
 @Api(tags = "用户管理")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @Autowired
-    private PhonesService phonesService;
+	@Autowired
+	private PhonesService phonesService;
 
-    /**
-     * 注册（用户名密码）
-     */
-    @PostMapping("/addUser")
-    public ResponseData addUser(@RequestBody User user) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(user.getUname())) {
-            return ResponseData.error().message("用户名不能为空");
-        }
-        if (org.apache.commons.lang3.StringUtils.isBlank(user.getPwd())) {
-            return ResponseData.error().message("密码不能为空");
-        }
-        if (org.apache.commons.lang3.StringUtils.isBlank(user.getPhone())) {
-            return ResponseData.error().message("手机号不能为空");
-        }
-        user.setImage("https://upyun.dinghuale.com/uploads/20200630/202006301514481588.jpg");
-        String salt = CommonUtil.getRandomSixNum();
-        user.setSalt(salt);
-        MD5Code md5Code = new MD5Code();
-        String aaaaa = md5Code.getMD5ofStr(user.getPwd() + salt);
-        user.setPwd(aaaaa);
-        user.setLoginway(0);    // 0-密码，1-手机号
-        return userService.save(user) ? ResponseData.success().message("恭喜你，注册成功！").data("data", user.getUname())
-                : ResponseData.error().code(ResultCodeEnum.FAILED.getCode()).message("注册失败了请重试!");
-    }
-
-
-    /**
-     * 预留手机号登录（登录、注册）
-     */
+	/**
+	 * 注册（用户名密码）
+	 */
+	@PostMapping("/addUser")
+	public ResponseData addUser(@RequestBody User user) {
+		if (org.apache.commons.lang3.StringUtils.isBlank(user.getUname())) {
+			return ResponseData.error().message("用户名不能为空");
+		}
+		if (org.apache.commons.lang3.StringUtils.isBlank(user.getPwd())) {
+			return ResponseData.error().message("密码不能为空");
+		}
+		if (org.apache.commons.lang3.StringUtils.isBlank(user.getPhone())) {
+			return ResponseData.error().message("手机号不能为空");
+		}
+		user.setImage("http://service.szhtkj.com.cn/SzhtShop/uploads/default/avatar/userimg.png");
+		String salt = CommonUtil.getRandomSixNum();
+		user.setSalt(salt);
+		MD5Code md5Code = new MD5Code();
+		String aaaaa = md5Code.getMD5ofStr(user.getPwd() + salt);
+		user.setPwd(aaaaa);
+		user.setLoginway(0);    // 0-密码，1-手机号
+		return userService.save(user) ? ResponseData.success().message("恭喜你，注册成功！").data("data", user.getUname())
+				: ResponseData.error().code(ResultCodeEnum.FAILED.getCode()).message("注册失败了请重试!");
+	}
 
 
-    /**
-     * 发送验证码
-     */
-
-    /**
-     * 用户名、密码登录
-     */
-    @PostMapping("/userLogin")
-    public ResponseData userLogin(@RequestBody LoginlogVo loginlogVo) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(loginlogVo.getUname()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(loginlogVo.getPwd())) {
-            return ResponseData.error().message("用户名或密码不能为空！");
-        }
-
-        User user = userService.getOne(new QueryWrapper<User>().eq("uname", loginlogVo.getUname()));
-        if (org.springframework.util.StringUtils.isEmpty(user)) {
-            return ResponseData.error().message("用户不存在，请重新登录！");
-        }
-        if (user.getState() == 2) {
-            return ResponseData.error().message("您已经被禁止登录，详情请咨询客服！");
-        }
-        String salt = user.getSalt();
-        MD5Code md5Code = new MD5Code();
-        String md5ofStr = md5Code.getMD5ofStr(loginlogVo.getPwd() + salt);
-        if (!org.apache.commons.lang3.StringUtils.equals(md5ofStr, user.getPwd())) {
-            return ResponseData.error().message("密码错误，请重试！");
-        }
-        return ResponseData.success().message("登录成功").data("data", user);
-    }
+	/**
+	 * 预留手机号登录（登录、注册）
+	 */
 
 
-    /**
-     * 修改用户信息
-     */
-    @PostMapping("updUserInfo")
-    public ResponseData updUserInfo(@RequestBody User user) {
-        if (StringUtils.isEmpty(user)) {
-            return ResponseData.error().message("请求参数不能为空!");
-        }
-        return userService.updateByIds(user) ? ResponseData.success().message("修改信息成功！").data("data", user)
-                : ResponseData.error().message("修改信息失败!");
-    }
+	/**
+	 * 发送验证码
+	 */
 
-    /**
-     * 修改密码
-     */
-    @PostMapping("updPasswordById/{id}")
-    public ResponseData updPasswordById(@PathVariable("id") String id, @RequestBody LoginUserPwdVo loginForm) {
-        if (org.apache.commons.lang3.StringUtils.isBlank(id) || org.apache.commons.lang3.StringUtils.isBlank(loginForm.getPassword()) || org.apache.commons.lang3.StringUtils.isBlank(loginForm.getNewPassword())) {
-            return ResponseData.error().message("请填写密码！");
-        }
-        User user = userService.getById(Integer.parseInt(id));
-        String salt = user.getSalt();
-        if (org.springframework.util.StringUtils.isEmpty(user)) {
-            return ResponseData.error().message("用户不存在！");
-        }
-        MD5Code md5Code = new MD5Code();
-        String md5ofStr = md5Code.getMD5ofStr(loginForm.getPassword() + salt);
-        if (!org.apache.commons.lang3.StringUtils.equals(md5ofStr, user.getPwd())) {
-            return ResponseData.error().message("对不起，您输入的原密码有误，请重试！");
-        }
-        String newPas = md5Code.getMD5ofStr(loginForm.getNewPassword() + salt);
+	/**
+	 * 用户名、密码登录
+	 */
+	@PostMapping("/userLogin")
+	public ResponseData userLogin(@RequestBody LoginlogVo loginlogVo) {
+		if (org.apache.commons.lang3.StringUtils.isBlank(loginlogVo.getUname()) ||
+				org.apache.commons.lang3.StringUtils.isBlank(loginlogVo.getPwd())) {
+			return ResponseData.error().message("用户名或密码不能为空！");
+		}
 
-        return userService.updPwdById(user.getId(), newPas) ? ResponseData.success().code(ResultCodeEnum.SUCCESS.getCode()).message("修改密码成功！")
-                : ResponseData.error().code(ResultCodeEnum.FAILED.getCode()).message("修改密码失败!");
-    }
+		User user = userService.getOne(new QueryWrapper<User>().eq("uname", loginlogVo.getUname()));
+		if (org.springframework.util.StringUtils.isEmpty(user)) {
+			return ResponseData.error().message("用户不存在，请重新登录！");
+		}
+		if (user.getState() == 2) {
+			return ResponseData.error().message("您已经被禁止登录，详情请咨询客服！");
+		}
+		String salt = user.getSalt();
+		MD5Code md5Code = new MD5Code();
+		String md5ofStr = md5Code.getMD5ofStr(loginlogVo.getPwd() + salt);
+		if (!org.apache.commons.lang3.StringUtils.equals(md5ofStr, user.getPwd())) {
+			return ResponseData.error().message("密码错误，请重试！");
+		}
+		return ResponseData.success().message("登录成功").data("data", user);
+	}
 
 
-    /**
-     * 禁用用户登录       state = 2 禁止登录
-     */
-    @GetMapping("/disableUserById/{userId}")
-    public ResponseData disableUserById(@PathVariable("userId") String userId) {
-        Integer state = 2;
-        return userService.updAbleUserById(Integer.parseInt(userId), state) ? ResponseData.success().message("禁用用户登录成功!")
-                : ResponseData.error().message("禁用用户登录失败!");
-    }
+	/**
+	 * 修改用户信息
+	 */
+	@PostMapping("updUserInfo")
+	public ResponseData updUserInfo(@RequestBody User user) {
+		if (StringUtils.isEmpty(user)) {
+			return ResponseData.error().message("请求参数不能为空!");
+		}
+		return userService.updateByIds(user) ? ResponseData.success().message("修改信息成功！").data("data", user)
+				: ResponseData.error().message("修改信息失败!");
+	}
 
-    /**
-     * 解禁用户登录       state = 2 禁止登录
-     */
-    @GetMapping("/ableUserById/{userId}")
-    public ResponseData ableUserById(@PathVariable("userId") String userId) {
-        Integer state = 1;
-        return userService.updAbleUserById(Integer.parseInt(userId), state) ? ResponseData.success().message("解禁用户成功!")
-                : ResponseData.error().message("解禁用户失败!");
-    }
+	/**
+	 * 修改密码
+	 */
+	@PostMapping("updPasswordById/{id}")
+	public ResponseData updPasswordById(@PathVariable("id") String id, @RequestBody LoginUserPwdVo loginForm) {
+		if (org.apache.commons.lang3.StringUtils.isBlank(id) || org.apache.commons.lang3.StringUtils.isBlank(loginForm.getPassword()) || org.apache.commons.lang3.StringUtils.isBlank(loginForm.getNewPassword())) {
+			return ResponseData.error().message("请填写密码！");
+		}
+		User user = userService.getById(Integer.parseInt(id));
+		String salt = user.getSalt();
+		if (org.springframework.util.StringUtils.isEmpty(user)) {
+			return ResponseData.error().message("用户不存在！");
+		}
+		MD5Code md5Code = new MD5Code();
+		String md5ofStr = md5Code.getMD5ofStr(loginForm.getPassword() + salt);
+		if (!org.apache.commons.lang3.StringUtils.equals(md5ofStr, user.getPwd())) {
+			return ResponseData.error().message("对不起，您输入的原密码有误，请重试！");
+		}
+		String newPas = md5Code.getMD5ofStr(loginForm.getNewPassword() + salt);
+
+		return userService.updPwdById(user.getId(), newPas) ? ResponseData.success().code(ResultCodeEnum.SUCCESS.getCode()).message("修改密码成功！")
+				: ResponseData.error().code(ResultCodeEnum.FAILED.getCode()).message("修改密码失败!");
+	}
 
 
-    /**
-     * 获取user列表    分页+查询
-     */
-    @GetMapping("/getUserList")
-    public ResponseData getUserList(@RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
-                                    @RequestParam(name = "pagesize", defaultValue = "10", required = false) long pagesize) {
-        Page<User> page = userService.getCateList(pagenum, pagesize);
-        if (page != null) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("total", page.getTotal());
-            map.put("data", page.getRecords());
-            return ResponseData.success().message("获取用户列表成功！").data(map);
-        }
-        return ResponseData.error().message("获取用户列表失败！");
-    }
+	/**
+	 * 禁用用户登录       state = 2 禁止登录
+	 */
+	@GetMapping("/disableUserById/{userId}")
+	public ResponseData disableUserById(@PathVariable("userId") String userId) {
+		Integer state = 2;
+		return userService.updAbleUserById(Integer.parseInt(userId), state) ? ResponseData.success().message("禁用用户登录成功!")
+				: ResponseData.error().message("禁用用户登录失败!");
+	}
+
+	/**
+	 * 解禁用户登录       state = 2 禁止登录
+	 */
+	@GetMapping("/ableUserById/{userId}")
+	public ResponseData ableUserById(@PathVariable("userId") String userId) {
+		Integer state = 1;
+		return userService.updAbleUserById(Integer.parseInt(userId), state) ? ResponseData.success().message("解禁用户成功!")
+				: ResponseData.error().message("解禁用户失败!");
+	}
 
 
-    @GetMapping("/getUserListByCategory/{id}")
-    public ResponseData getUserListByCategory(@PathVariable("id") Integer id) {
+	/**
+	 * 获取user列表    分页+查询
+	 */
+	@GetMapping("/getUserList")
+	public ResponseData getUserList(@RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
+									@RequestParam(name = "pagesize", defaultValue = "10", required = false) long pagesize) {
+		Page<User> page = userService.getCateList(pagenum, pagesize);
+		if (page != null) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("total", page.getTotal());
+			map.put("data", page.getRecords());
+			return ResponseData.success().message("获取用户列表成功！").data(map);
+		}
+		return ResponseData.error().message("获取用户列表失败！");
+	}
+
+
+	@GetMapping("/getUserListByCategory/{id}")
+	public ResponseData getUserListByCategory(@PathVariable("id") Integer id) {
 //        userService.getUserListByCategory(id);
 
-        return ResponseData.error().message("获取用户列表失败！");
-    }
+		return ResponseData.error().message("获取用户列表失败！");
+	}
 
-    /**
-     * 搜索
-     */
-    @GetMapping("/getSearchList")
-    public ResponseData getSearchList(@RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
-                                      @RequestParam(name = "pagesize", defaultValue = "10", required = false) long pagesize,
-                                      @RequestParam(name = "searchText", required = false) String searchText) {
-        Page<PhonesVo> page = phonesService.getSearchList(pagenum, pagesize, searchText);
-        if (page != null) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("total", page.getTotal());
-            map.put("data", page.getRecords());
-            return ResponseData.success().message("获取搜索列表成功！").data(map);
-        }
-        return ResponseData.error().message("获取搜索列表失败！");
-    }
+	/**
+	 * 搜索
+	 */
+	@PostMapping("/getSearchList")
+	public ResponseData getSearchList(@RequestBody SearchVO searchVO) {
+		Page<PhonesVo> page = phonesService.getSearchList(searchVO.getPagenum(), searchVO.getPagesize(), searchVO.getA());
+		if (page != null) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("total", page.getTotal());
+			map.put("data", page.getRecords());
+			return ResponseData.success().message("获取搜索列表成功！").data(map);
+		}
+		return ResponseData.error().message("获取搜索列表失败！");
+	}
 
 
 }

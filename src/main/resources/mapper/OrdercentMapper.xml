@@ -42,7 +42,7 @@
             c.categoryname name
         FROM
             category c
-            LEFT JOIN flowers f ON f.categoryid = c.id
+            LEFT JOIN phones f ON f.categoryid = c.id
         GROUP BY
             f.categoryid
     </select>
