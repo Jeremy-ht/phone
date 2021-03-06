@@ -24,7 +24,7 @@
             f.price price
         FROM
             cart c
-            LEFT JOIN flowers f ON f.id = c.flowerid
+            LEFT JOIN phones f ON f.id = c.flowerid
         WHERE
             c.state = 1
             AND c.userid = #{id}

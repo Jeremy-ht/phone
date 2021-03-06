@@ -103,7 +103,7 @@ public class AdminController {
         String salt = CommonUtil.getRandomSixNum();
         admin.setSalt(salt);
         MD5Code md5Code = new MD5Code();
-        String aaaaa = md5Code.getMD5ofStr("666666" + salt);
+        String aaaaa = md5Code.getMD5ofStr(admin.getUsername() + salt);
         admin.setPassword(aaaaa);
         admin.setCreator(Integer.parseInt(creator));
         return adminService.save(admin) ? ResponseData.success().code(ResultCodeEnum.SUCCESS.getCode()).message("添加员工成功！")

@@ -56,10 +56,11 @@
 			phones f
 			LEFT JOIN category c ON f.categoryid = c.id
 		WHERE
-			f.isShow = 1
-			AND ( f.state = 1 || f.state = 3 )
+			f.isshow is not null
+			AND f.state = 1
 		ORDER BY
-			f.creatime DESC
+			f.isshow DESC
+		limit 4
     </select>
 
 	<select id="getSceneryInfo" resultType="com.isoft.pojo.vo.PhonesVo">
@@ -90,5 +91,30 @@
 			)
 		ORDER BY
 			f.creatime DESC
+	</select>
+
+
+	<select id="getInfoList6" resultType="com.isoft.pojo.entity.Phones">
+		SELECT
+			f.*,
+			c.categoryname
+		FROM
+			phones f
+			LEFT JOIN category c ON f.categoryid = c.id
+		WHERE
+			f.state = 1
+			AND f.id IN (
+				SELECT
+					o.flowerid
+				FROM
+					orders o
+				WHERE
+					o.flowerid IN ( SELECT id FROM phones p WHERE p.categoryid = #{categoryid} )
+				GROUP BY
+					o.flowerid
+				ORDER BY
+					count( 1 ) DESC
+			)
+			LIMIT 6
 	</select>
 </mapper>

@@ -35,7 +35,7 @@ public class Phones implements Serializable {
 
     private Integer kucun;
 
-    private Integer price;
+    private double price;
 
     /**
      * 重量 kg

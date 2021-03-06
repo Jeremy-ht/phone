@@ -51,6 +51,38 @@ public class OrdersController {
     @Autowired
     private AddressService addressService;
 
+    // 立即购买
+    @PostMapping("/addOrder2")
+    public ResponseData addOrder2(@RequestBody Orders order) {
+
+    	Integer amount = Integer.valueOf(order.getPhone());
+    	Integer phoneid = Integer.valueOf(order.getName());
+
+        Address a = addressService.getById(Integer.valueOf(order.getFlowerid()));
+        if (a == null) {
+            ResponseData.error().code(ResultCodeEnum.FAILED.getCode()).message("请选择地址");
+        }
+        order.setName(a.getName());
+        order.setAddress(a.getAddress());
+        order.setPhone(a.getPhone());
+        boolean save = ordersService.save(order);
+        if (save) {
+            Ordercent ordercent = new Ordercent();
+            ordercent.setAmount(amount);
+            ordercent.setFlowerid(phoneid);
+            ordercent.setOrderid(order.getId());
+            ordercentMapper.insert(ordercent);
+
+        }
+
+        return save ? ResponseData.success().message("成功！")
+                : ResponseData.error().code(ResultCodeEnum.FAILED.getCode()).message("失败了请重试!");
+
+    }
+
+
+
+
     @PostMapping("/addOrder")
     public ResponseData addOrder(@RequestBody Orders order) {
         String[] split = order.getName().split(",");
