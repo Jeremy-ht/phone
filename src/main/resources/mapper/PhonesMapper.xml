@@ -19,7 +19,7 @@
 		<result column="wuxian" property="wuxian"/>
 		<result column="chicun" property="chicun"/>
 		<result column="nfc" property="nfc"/>
-		<result column="isShow" property="isShow"/>
+		<result column="isshow" property="isshow"/>
 		<result column="pool" property="pool"/>
 		<result column="icon" property="icon"/>
 		<result column="state" property="state"/>
