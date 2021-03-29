@@ -44,6 +44,6 @@
             category c
             LEFT JOIN phones f ON f.categoryid = c.id
         GROUP BY
-            f.categoryid
+            c.categoryname
     </select>
 </mapper>

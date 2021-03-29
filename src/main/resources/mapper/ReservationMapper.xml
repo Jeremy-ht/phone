@@ -40,7 +40,7 @@
             r.id id
         FROM
             reservation r
-            LEFT JOIN USER u ON u.id = r.userid
+            LEFT JOIN user u ON u.id = r.userid
             LEFT JOIN info i ON i.id = r.infoid
         WHERE
             r.state = 1
