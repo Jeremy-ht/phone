@@ -31,7 +31,12 @@
             u.phone uphone
         from orders o
         left join user u on u.id = o.userid
-        where o.state = 1
+        <where>
+            o.state = 1
+            <if test="id != 0">
+                and o.userid = #{id}
+            </if>
+        </where>
         ORDER BY
 	        o.creatime DESC
     </select>

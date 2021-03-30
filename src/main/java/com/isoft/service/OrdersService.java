@@ -15,5 +15,5 @@ import com.isoft.pojo.vo.OrderVo;
  */
 public interface OrdersService extends IService<Orders> {
 
-    Page<OrderVo> getCateList(long pagenum, long pagesize);
+    Page<OrderVo> getCateList(int id,long pagenum, long pagesize);
 }

@@ -24,9 +24,9 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> impleme
     private OrdersMapper ordersMapper;
 
     @Override
-    public Page<OrderVo> getCateList(long pagenum, long pagesize) {
+    public Page<OrderVo> getCateList(int id,long pagenum, long pagesize) {
         Page<OrderVo> page = new Page<>(pagenum, pagesize);
-        Page<OrderVo> ipage = ordersMapper.selCateList(page);
+        Page<OrderVo> ipage = ordersMapper.selCateList(page, id);
         return ipage;
     }
 }

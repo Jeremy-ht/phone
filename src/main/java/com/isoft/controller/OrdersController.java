@@ -113,10 +113,11 @@ public class OrdersController {
     }
 
 
-    @GetMapping("/getOrderList")
-    public ResponseData getOrderList(@RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
+    @GetMapping("/getOrderList/{id}")
+    public ResponseData getOrderList(@PathVariable("id") int id,
+                                     @RequestParam(name = "pagenum", defaultValue = "1", required = false) long pagenum,
                                      @RequestParam(name = "pagesize", defaultValue = "10", required = false) long pagesize) {
-        Page<OrderVo> page = ordersService.getCateList(pagenum, pagesize);
+        Page<OrderVo> page = ordersService.getCateList(id, pagenum, pagesize);
         if (page != null) {
 
             List<OrderVo> orderVos = page.getRecords();
@@ -132,7 +133,7 @@ public class OrdersController {
             }
 
             Map<String, Object> map = new HashMap<>();
-            map.put("total", orderVos);
+            map.put("total", orderVos.size());
             map.put("data", page.getRecords());
             return ResponseData.success().message("获取列表成功！").data(map);
         }
