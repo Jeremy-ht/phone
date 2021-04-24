@@ -21,6 +21,6 @@ public interface FlowersMapper extends BaseMapper<Flowers> {
     String getSceneryListByCate(Integer id);
 
 
-    @Update("UPDATE flowers SET state=0 WHERE id=#{id}")
+    @Update("UPDATE phones SET state=0 WHERE id=#{id}")
     boolean removeByIdss(Integer id);
 }

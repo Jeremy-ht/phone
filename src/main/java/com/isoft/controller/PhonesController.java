@@ -102,6 +102,13 @@ public class PhonesController {
         return ResponseData.success().message("获取数据成功！").data("data", li1);
     }
 
+    @GetMapping("/getBJlist")
+    public ResponseData getBJlist() {
+
+        List<PhonesVo> li1 = phonesMapper.getList();
+        return ResponseData.success().message("获取数据成功！").data("data", li1);
+    }
+
 
     /**
      * 首页三大分类获取
@@ -228,6 +235,8 @@ public class PhonesController {
 
         return ResponseData.success().message("获取数据成功！").data("data", list);
     }
+
+
 
 
 }

@@ -94,6 +94,17 @@
 	</select>
 
 
+	<select id="getList" resultType="com.isoft.pojo.vo.PhonesVo">
+		SELECT
+			f.*,
+			c.categoryname
+		FROM
+			phones f
+			LEFT JOIN category c ON f.categoryid = c.id
+		WHERE
+			f.state = 1
+	</select>
+
 	<select id="getInfoList6" resultType="com.isoft.pojo.entity.Phones">
 		SELECT
 			f.*,

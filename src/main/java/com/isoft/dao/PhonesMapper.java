@@ -19,13 +19,12 @@ import java.util.List;
  */
 public interface PhonesMapper extends BaseMapper<Phones> {
 
-	@Update("update Phones set state = #{state} where id = #{id}")
+	@Update("update phones set state = #{state} where id = #{id}")
 	int pullScenery(@Param("id") Integer id, @Param("state") Integer state);
 
 	Page<PhonesVo> getSceneryList(Page<PhonesVo> page, Integer categoryId);
 
 	List<PhonesVo> getFourIcon();
-
 	PhonesVo getSceneryInfo(Integer id);
 
 	@Select("SELECT categoryname FROM category where id = #{id}")
@@ -33,15 +32,17 @@ public interface PhonesMapper extends BaseMapper<Phones> {
 
 	Page<PhonesVo> getSearchList(@Param("page") Page<PhonesVo> page,
 								 @Param("searchText") String searchText);
-
 	List<Phones> getInfoList6(Integer categoryid);
 
-	@Update("update Phones set isshow = null,icon = null where id = #{id}")
+	@Update("update phones set isshow = null,icon = null where id = #{id}")
 	int updIsshowById(Integer id);
 
-	@Update("update Phones set isshow = 1,icon = #{image} where id = #{id}")
+	@Update("update phones set isshow = 1,icon = #{image} where id = #{id}")
 	int updIsshowById2(@Param("id") Integer id, @Param("image") String image);
 
-	@Update("update Phones set isshow = #{isshow},icon = #{image} where id = #{id}")
+	@Update("update phones set isshow = #{isshow},icon = #{image} where id = #{id}")
 	int updIsshowById3(@Param("id") Integer id, @Param("isshow") Integer isshow, @Param("image") String image);
+
+	List<PhonesVo> getList();
+
 }
